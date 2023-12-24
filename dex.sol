@@ -49,5 +49,13 @@ contract Dex {
         emit TradeExecuted(msg.sender, address(this), ticker, amount, pair.price);
     }
 
+     // Function to update the price of a trading pair
+    function updatePrice(bytes32 ticker, uint256 newPrice) external {
+        Pair storage pair = pairs[ticker];
+        require(address(pair.token) != address(0), "Pair does not exist");
+
+        pair.price = newPrice;
+    }
+
 
    }
