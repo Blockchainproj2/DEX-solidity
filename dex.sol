@@ -31,4 +31,23 @@ contract Dex {
         pairs[ticker] = Pair(token, initialPrice);
     }
 
+     // Function to execute a trade
+    function trade(bytes32 ticker, uint256 amount, uint256 maxPrice) external {
+        Pair storage pair = pairs[ticker];
+        require(address(pair.token) != address(0), "Pair does not exist");
+
+        uint256 totalPrice = amount * pair.price;
+        require(totalPrice <= maxPrice, "Trade exceeds maximum price");
+
+        // Transfer tokens from the buyer to the DEX
+        pair.token.transferFrom(msg.sender, address(this), amount);
+
+        // Transfer tokens from the DEX to the buyer
+        pair.token.transfer(msg.sender, amount);
+
+        // Emit trade execution event
+        emit TradeExecuted(msg.sender, address(this), ticker, amount, pair.price);
+    }
+
+
    }
